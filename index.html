@@ -1,0 +1,3104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 KGSF Directory</title>
+  <style>
+    :root{
+      --black:#111827;
+      --orange:#694F35;
+      --bg:#f7f9fc;
+      --line:#e5e7eb;
+      --muted:#6b7280;
+      --white:#fff;
+      --shadow:0 18px 50px rgba(17,24,39,.12);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--black);
+      font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+    }
+    button,input,textarea{font:inherit}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:48px 0 120px}
+    h1{margin:0 0 10px;font-size:42px;letter-spacing:-.04em}
+    .sub{margin:0 0 32px;color:var(--muted);line-height:1.7}
+
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .card{
+      background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+      padding:22px;box-shadow:0 8px 24px rgba(17,24,39,.05);
+      display:flex;flex-direction:column;min-height:210px;
+    }
+    .category{
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .category.beauty{
+      color:#e85d8e;
+    }
+
+    .category.food{
+      color:#78a83b;
+    }
+
+    .category.home-living{
+      color:#d6cb00;
+    }
+
+    .category.healthcare{
+      color:#3b82c4;
+    }
+
+    .category.digital-industrial{
+      color:#8b5cf6;
+    }
+
+    .category-separator{
+     color:#9ca3af;
+     font-size:12px;
+     font-weight:800;
+   }
+    .card h3{margin:8px 0 8px;font-size:20px}
+    .product-preview{color:var(--muted);font-size:13px;line-height:1.6;flex:1}
+    .request-btn{
+      margin-top:18px;height:44px;border:0;border-radius:12px;background:var(--black);
+      color:#fff;font-weight:800;cursor:pointer;
+    }
+    .request-btn.added{background:#eaf2ff;color:#183153;border:1px solid #cddfff}
+
+    .card-subcategories{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+     margin:2px 0 12px;
+    }
+
+    .card-subcategory{
+      display:inline-block;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#f3f4f6;
+      color:#4b5563;
+      font-size:11px;
+      font-weight:700;
+      line-height:1.2;
+    }
+
+     .directory-header{
+       position:sticky;top:0;z-index:30;
+       display:flex;align-items:center;justify-content:space-between;gap:16px;
+       padding:13px 20px;margin:0 0 28px;
+       background:rgba(255,255,255,.97);border:1px solid var(--line);
+       border-radius:16px;box-shadow:0 5px 22px rgba(17,24,39,.07);
+     }
+     .header-brand{display:flex;flex-direction:column;gap:3px}
+     .header-brand strong{font-size:17px;letter-spacing:-.02em}
+     .header-brand small{font-size:11px;color:var(--muted);font-weight:700}
+     .cart-fab{
+       border:0;border-radius:12px;padding:13px 18px;
+       background:#694F35;color:#fff;font-size:14px;font-weight:800;
+       box-shadow:0 5px 16px rgba(34,88,44,.18);
+       cursor:pointer;transition:background .2s,transform .2s;
+     }
+     .cart-fab:hover{background:#194622;transform:translateY(-1px)}
+     .cart-fab:focus-visible{outline:3px solid #86c99a;outline-offset:3px}
+     .cart-fab[hidden]{display:none!important}
+    .overlay{
+      position:fixed;inset:0;background:rgba(17,24,39,.55);z-index:50;
+      display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    .overlay.open{display:flex}
+    .modal{
+      width:min(680px,100%);max-height:90vh;overflow:auto;background:#fff;
+      border-radius:26px;box-shadow:0 30px 100px rgba(0,0,0,.25);
+    }
+    .modal-head{
+      position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
+      display:flex;justify-content:space-between;align-items:center;padding:20px 24px;z-index:2;
+    }
+    .modal-head h2{font-size:21px;margin:0}
+    .close{border:0;background:#f1f3f5;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:20px}
+    .modal-body{padding:24px}
+    .field-label{display:block;font-weight:800;margin:0 0 10px}
+    .help{font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.6}
+    .check-list{display:grid;gap:10px;margin-bottom:24px}
+    .check-item,.radio-item{
+      display:flex;gap:10px;align-items:center;border:1px solid var(--line);
+      border-radius:12px;padding:12px 14px;cursor:pointer;
+    }
+    .check-item input, .radio-item input{margin:0;flex-shrink:0;accent-color:#111827}
+    textarea,.text-input{
+      width:100%;border:1px solid #d7dce3;border-radius:12px;padding:13px 14px;outline:none;
+    }
+    textarea{min-height:110px;resize:vertical}
+    textarea:focus,.text-input:focus{border-color:#111827}
+    .radio-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:26px}
+    .btn{height:44px;padding:0 18px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+    .btn.secondary{background:#eef1f5;color:#111827}
+    .btn.primary{background:#111827;color:#fff}
+
+    .cart-item{
+      border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;
+    }
+    .cart-item h4{margin:0 0 8px}
+    .cart-meta{font-size:13px;color:var(--muted);line-height:1.6}
+    .cart-actions{display:flex;gap:8px;margin-top:12px}
+    .mini-btn{border:0;background:#f1f3f5;border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer}
+    .mini-btn.remove{color:#b42318;background:#fff0ee}
+
+    .submit-box{
+      margin-top:22px;padding-top:22px;border-top:1px solid var(--line)
+    }
+    .submission-note{display:flex;align-items:flex-start;gap:9px;margin:16px 0 0;padding:12px 14px;background:#f7f9f5;border:1px solid #e2e9df;border-radius:10px;color:#4b5563;font-size:13px;line-height:1.6}
+    .submission-note-icon{flex-shrink:0;color:#694F35;font-size:17px;line-height:1.25}
+    .submission-note strong{color:#374151}
+    .submit-btn{
+      width:100%;height:52px;border:0;border-radius:14px;background:var(--orange);
+      color:#fff;font-weight:900;cursor:pointer;margin-top:14px;
+    }
+    .submit-btn:disabled{opacity:.45;cursor:not-allowed}
+
+    .success{
+      text-align:center;padding:50px 28px;
+    }
+    .success .icon{font-size:48px;margin-bottom:12px}
+    .success h2{margin:0 0 10px}
+    .success p{color:var(--muted);line-height:1.7}
+
+    .dev-note{
+      margin:0 0 28px;padding:15px 17px;border-radius:14px;background:#F5F0EB;
+      border:1px solid #B99775;color:#694F35;font-size:13px;line-height:1.65;
+    }
+
+    .search-panel{
+      margin:0 0 28px;
+      padding:18px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 8px 24px rgba(17,24,39,.04);
+    }
+
+    .search-main{
+      position:relative;
+      margin-bottom:14px;
+    }
+
+    .search-icon{
+      position:absolute;
+      left:16px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#9ca3af;
+      font-size:19px;
+      pointer-events:none;
+    }
+
+    .search-input,
+    .filter-select{
+      width:100%;
+      height:48px;
+      border:1px solid #d7dce3;
+      border-radius:12px;
+      background:#fff;
+      outline:none;
+    }
+
+    .search-input{
+      padding:0 14px 0 46px;
+    }
+
+    .filter-select{
+      padding:0 14px;
+    }
+
+    .search-input:focus,
+    .filter-select:focus{
+      border-color:#111827;
+    }
+
+    .filter-row{
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:12px;
+    }
+
+    .reset-filter-btn{
+      height:48px;
+      padding:0 18px;
+      border:1px solid #d7dce3;
+      border-radius:12px;
+      background:#fff;
+      color:#374151;
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .reset-filter-btn:hover{
+      background:#f3f4f6;
+    }
+
+    .active-filters{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .filter-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:0;
+      background:#f3f4f6;
+      color:#374151;
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .filter-chip:hover{
+      background:#e5e7eb;
+    }
+
+    .result-count{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+
+    .meeting-badge{
+      flex-shrink:0;
+      background:#eaf2ff;
+      color:#183153;
+      border:1px solid #cddfff;
+      border-radius:999px;
+      padding:5px 9px;
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .detail-top-btn{
+      position:fixed;
+      right:28px;
+      bottom:92px;
+      z-index:19;
+      width:48px;
+      height:48px;
+      border:1px solid var(--line);
+      border-radius:50%;
+      background:#fff;
+      color:var(--black);
+      box-shadow:0 8px 24px rgba(17,24,39,.14);
+      font-size:18px;
+      font-weight:900;
+      cursor:pointer;
+      display:none;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .detail-top-btn:hover{
+      background:#f3f4f6;
+    }
+
+    .detail-top-btn.show{
+      display:flex;
+    }
+
+    .card-product-image{
+      width:100%;
+      height:145px;
+      object-fit:contain;
+      background:#f8f9fa;
+      border-radius:14px;
+      margin-bottom:16px;
+    }
+
+    .detail-subpages{
+      margin-top:16px;
+      padding:14px 0 0;
+     font-size:13px;
+      line-height:1.7;
+    }
+
+    .detail-subpage-label{
+      margin-bottom:5px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .detail-subpages a{
+      display:block;
+      color:#374151;
+      text-decoration:underline;
+      text-underline-offset:2px;
+      overflow-wrap:anywhere;
+    }
+
+    /* ============================================================
+   ACCESS CODE SCREEN
+   ============================================================ */
+
+    .access-screen{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:#f7f8fa;
+    }
+
+    .access-card{
+      width:100%;
+      max-width:460px;
+      padding:42px 36px;
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:24px;
+      box-shadow:0 18px 50px rgba(0,0,0,.07);
+      text-align:center;
+    }
+
+    .access-eyebrow{
+      margin-bottom:10px;
+      color:#6b7280;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .access-card h1{
+      margin:0 0 14px;
+      font-size:30px;
+    }
+
+    .access-card p{
+      margin:0 auto 28px;
+      max-width:370px;
+      color:#6b7280;
+      font-size:14px;
+      line-height:1.7;
+    }
+
+    .access-form{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .access-form input{
+      width:100%;
+      height:52px;
+      padding:0 16px;
+      border:1px solid #d1d5db;
+      border-radius:12px;
+      outline:none;
+      font-size:15px;
+      text-align:center;
+      font-weight:700;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      box-sizing:border-box;
+    }
+
+    .access-form input:focus{
+      border-color:#111827;
+      box-shadow:0 0 0 3px rgba(17,24,39,.08);
+    }
+
+    .access-form button{
+      height:52px;
+      border:0;
+      border-radius:12px;
+      background:#111827;
+      color:#fff;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .access-form button:disabled{
+      opacity:.55;
+     cursor:not-allowed;
+    }
+
+    .access-message{
+      min-height:20px;
+      margin-top:16px;
+      color:#dc2626;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .access-message.loading{
+      color:#6b7280;
+    }
+
+    @media(max-width:560px){
+      .access-card{
+        padding:34px 22px;
+        border-radius:20px;
+      }
+
+      .access-card h1{
+        font-size:26px;
+      }
+    }
+
+    .pagination{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:36px;
+    }
+
+    .page-btn{
+      min-width:40px;
+      height:40px;
+      padding:0 12px;
+      border:1px solid #d7dce3;
+      border-radius:10px;
+      background:#fff;
+      color:#374151;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .page-btn:hover{
+      background:#f3f4f6;
+    }
+
+    .page-btn.active{
+      background:#111827;
+      color:#fff;
+      border-color:#111827;
+    }
+
+    .page-btn:disabled{
+      opacity:.4;
+      cursor:not-allowed;
+    }
+
+    .detail-request-btn:disabled{
+      background:#e5e7eb;
+      color:#6b7280;
+      cursor:not-allowed;
+    }
+
+    
+/* Meeting Report Matrix */
+    .report-matrix-wrap {
+      overflow-x: auto;
+      margin: 20px 0 26px;
+    }
+
+    .report-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+      table-layout: fixed;
+    }
+
+    .report-matrix th,
+    .report-matrix td {
+      padding: 14px 8px;
+      text-align: center;
+      border-bottom: 1px solid #eef0f3;
+    }
+
+    .report-matrix th:first-child,
+    .report-matrix td:first-child {
+      width: 32%;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .report-matrix th {
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .report-matrix td {
+      font-size: 14px;
+    }
+
+    .report-matrix input[type="radio"] {
+      width: 19px;
+      height: 19px;
+      margin: 0;
+      accent-color: #111827;
+      cursor: pointer;
+    }
+
+    .report-matrix label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 32px;
+      cursor: pointer;
+    }
+
+    .report-matrix tbody tr:hover {
+      background: #f9fafb;
+    }
+
+
+    .detail-page{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+    .detail-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+    .back-btn{border:0;background:#f1f3f5;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .detail-title{margin:0 0 8px;font-size:34px;letter-spacing:-.03em}
+    .detail-desc{color:var(--muted);line-height:1.7;white-space: pre-line}
+    .detail-chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 24px}
+    .detail-chip{background:#f3f4f6;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+    .detail-info{border:1px solid var(--line);border-radius:14px;padding:14px}
+    .detail-info small{display:block;color:var(--muted);margin-bottom:5px}
+    .detail-products{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:14px;margin-top:18px}
+    .detail-product{border:1px solid var(--line);border-radius:16px;padding:16px}
+    .detail-product h4{margin:0 0 8px}
+    .cert-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .cert-badge{font-size:12px;background:#F5F0EB;border:1px solid #B99775;color:#694F35;border-radius:999px;padding:5px 8px}
+    .detail-request-btn{
+      border:0;border-radius:14px;background:var(--orange);color:#fff;font-weight:900;
+      min-height:50px;padding:0 20px;cursor:pointer;
+    }
+    .detail-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .detail-links a{display:inline-block;text-decoration:none;background:#111827;color:#fff;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px}
+
+    @media(max-width:560px){
+      .grid{grid-template-columns:1fr}
+      .filter-row,.detail-grid{grid-template-columns:1fr}
+      .reset-filter-btn{width:100%;}
+      h1{font-size:34px}
+       .directory-header{padding:12px 14px;margin-bottom:20px}
+       .header-brand strong{font-size:15px}
+       .cart-fab{
+         position:fixed;right:16px;bottom:16px;top:auto;left:16px;
+         z-index:40;width:calc(100% - 32px);padding:16px 18px;
+         border-radius:14px;box-shadow:0 8px 28px rgba(34,88,44,.28);
+       }
+      .radio-row{grid-template-columns:1fr}
+      .detail-top-btn{right:16px;bottom:82px;}
+    }
+    @media (max-width:700px) {
+      .detail-products { grid-template-columns:1fr; }
+    }
+
+     .product-image-fallback{min-height:170px;background:#f3f4f6;border:1px dashed #d1d5db;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#6b7280;font-size:13px;margin-bottom:16px}
+     .product-image-fallback a{color:#374151;text-decoration:underline}
+     .inline-request-section{margin-top:36px;padding:26px;border:1px solid var(--line);border-radius:18px;background:#fafbfc;scroll-margin-top:24px}
+     .inline-request-section h3{margin:0 0 10px;font-size:24px}
+     .inline-request-fields{margin-top:24px}
+     .inline-request-fields .check-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+     .inline-save-btn{  display:block;width:fit-content;margin:24px auto 0;background:var(--orange);min-height:48px;padding:0 28px;}
+     .inline-request-submitted{padding:18px;border-radius:12px;background:#ecfdf3;color:#166534;font-weight:700}
+     @media(max-width:700px){.inline-request-section{padding:18px}.inline-request-fields .check-list{grid-template-columns:1fr}.inline-save-btn{width:100%}}
+
+    /* Meeting List save confirmation */
+    .meeting-toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,16px);z-index:110;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px);padding:14px 20px;border-radius:14px;background:#694F35;color:#fff;box-shadow:0 12px 36px rgba(0,0,0,.2);font-size:14px;font-weight:750;opacity:0;visibility:hidden;transition:opacity .2s,transform .2s,visibility .2s;pointer-events:none;text-align:center}
+    .meeting-toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+    @media(max-width:700px){.meeting-toast{bottom:88px;width:max-content}}
+  
+.online-availability{margin:20px 0;padding:20px;border:1px solid #d8e3f2;border-radius:18px;background:#fff}
+.online-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
+.online-head h3{font-size:21px;margin:0 0 7px;color:#142c54}
+.online-head p{font-size:13px;color:#66768a;margin:0}
+.online-zone-box{min-width:220px}.online-zone-box label{display:block;font-size:12px;font-weight:750;margin-bottom:7px}
+.online-zone{width:100%;padding:10px;border:1px solid #d1dbe8;border-radius:9px;background:white}
+.online-day-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.online-day-panel{padding:15px;border:1px solid #d9e7fc;border-radius:15px;background:#f3f8ff}
+.online-day-panel.online-day2{background:#faf6ff;border-color:#e9dcfc}
+.online-day-title{font-size:17px;font-weight:800;color:#1c5dc4;margin:0 0 13px}
+.online-day2 .online-day-title{color:#7543bb}
+.online-day-title small{display:block;color:#75839a;font-size:11px;font-weight:500;margin-top:4px}
+.online-session-list{display:flex;flex-direction:column;gap:7px}
+.online-session{display:flex;align-items:center;gap:10px;background:white;border:1px solid #dae3ef;border-radius:10px;padding:12px;cursor:pointer;min-height:56px}
+.online-session.is-checked{border-color:#6c9ef0;background:#eaf3ff}
+.online-day2 .online-session.is-checked{border-color:#b392e8;background:#f1e9ff}
+.online-session input{accent-color:#2369d4;width:17px;height:17px;flex-shrink:0}
+.online-session-name{font-size:12px;font-weight:800;white-space:nowrap;min-width:78px;color:#263b56}
+.online-session-time{font-size:14px;color:#155bc3;letter-spacing:-.2px}
+.online-day2 .online-session-time{color:#7137b8}
+.online-footnote{font-size:12px;color:#64748b;margin:14px 0 0}
+.online-notice{font-size:12px;padding:10px;background:#eff6ff;border-radius:8px;margin:10px 0}
+@media(max-width:650px){.online-day-columns{grid-template-columns:1fr}.online-head{flex-direction:column}.online-zone-box{width:100%}.online-availability{padding:12px}}
+</style>
+<style id="onlineAvailabilityStyles">
+.online-availability{background:linear-gradient(180deg,#f8fbff,#fff 35%);box-shadow:0 8px 28px rgba(35,65,105,.07)}
+.online-day-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+.online-day-panel{padding:14px;border-radius:14px;border:1px solid #d7e5fa;background:#f4f8ff}
+.online-day-panel.online-day2{background:#faf6ff;border-color:#e7dafa}
+.online-day-title{font-size:18px;color:#1554b0;margin:0 0 14px}
+.online-day2 .online-day-title{color:#7139b5}
+.online-day-title small{display:block;font-size:12px;color:#64748b;font-weight:400;margin-top:3px}
+.online-day-panel label{background:white;transition:background .15s,border-color .15s;min-height:68px}
+.online-day-panel label:has(input:checked){background:#e4f0ff;border-color:#6aa6f5!important}
+.online-day2 label:has(input:checked){background:#f0e8ff;border-color:#ae8bec!important}
+.online-day-panel input[type=checkbox]{accent-color:#2466cc;width:18px;height:18px;flex-shrink:0}
+@media(max-width:620px){.online-day-columns{grid-template-columns:1fr}.online-availability{padding:12px!important}}
+</style>
+</head>
+<body>
+
+  <!-- ACCESS CODE SCREEN -->
+  <div id="accessScreen" class="access-screen">
+    <div class="access-card">
+
+      <div class="access-eyebrow">
+        2026 KGSF
+      </div>
+
+      <h1>Supplier Directory</h1>
+
+      <p>
+        Please enter the access code provided by KITA
+        to view the supplier directory and submit meeting requests.
+      </p>
+
+      <div class="access-form">
+        <input
+          id="accessCodeInput"
+          type="text"
+          placeholder="Enter your access code"
+          autocomplete="off"
+          spellcheck="false"
+        >
+
+        <button
+          id="accessCodeButton"
+          type="button"
+          onclick="submitAccessCode()"
+        >
+          Continue
+        </button>
+      </div>
+
+      <div
+        id="accessMessage"
+        class="access-message"
+      ></div>
+
+    </div>
+  </div>
+
+  <main class="wrap" id="mainApp" hidden>
+    <header class="directory-header">
+      <div class="header-brand"><strong>Supplier Directory</strong><small>2026 KGSF</small></div>
+      <button id="cartFab" class="cart-fab" type="button" onclick="openCart()" hidden aria-label="Open my meeting list">
+        ☷ My Meeting List (<span id="cartCount">0</span>)
+      </button>
+    </header>
+    <section id="directoryView">
+      <h1>Supplier Directory</h1>
+      <p class="sub">
+        2026 Korea Grand Sourcing Fair
+      </p>
+
+      <div class="dev-note">
+        <b>Meeting Request:</b> You may apply to a minimum of 1 and a maximum of 10 companies.
+      </div>
+
+      <div class="search-panel">
+
+        <div class="search-main">
+          <span class="search-icon">🔍</span>
+
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            placeholder="Search companies, products, certifications..."
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="filter-row">
+
+          <select id="categoryFilter" class="filter-select">
+            <option value="">All Categories</option>
+          </select>
+
+          <select id="subcategoryFilter" class="filter-select">
+            <option value="">All Subcategories</option>
+          </select>
+
+          <button
+            id="resetFiltersBtn"
+            class="reset-filter-btn"
+            type="button"
+            onclick="resetFilters()"
+          >
+            ↻ Reset
+          </button>
+        </div>
+
+        <div id="activeFilters" class="active-filters"></div>
+        <div id="resultCount" class="result-count"></div>
+
+      </div>
+
+      <section id="companyGrid" class="grid"></section>
+      <div id="pagination" class="pagination"></div>
+    </section>
+
+    <section id="detailView" class="detail-page" hidden></section>
+  </main>
+
+  <button
+  id="detailTopBtn"
+  class="detail-top-btn"
+  type="button"
+  onclick="scrollDetailToTop()"
+  aria-label="Back to top"
+  title="Back to top">
+  ↑</button>
+
+
+  <div id="cartOverlay" class="overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Your Meeting Requests</h2>
+        <button class="close" onclick="closeCart()">×</button>
+      </div>
+
+      <div id="cartBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="meetingToast" class="meeting-toast" role="status" aria-live="polite"></div>
+  <div id="hiddenFrames" style="display:none"></div>
+
+<script>
+
+  const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxS8A8tvk7ghQn4BgFe9S9wdInXT8RdYSWub5nXfGj4U1ULqeyVAD4yITSEUvWRu5Al/exec";
+
+/* ============================================================
+   1) GOOGLE FORM 연결 설정
+   ============================================================ */
+
+const ONLINE_CONFIG = {
+  // 새 온라인 전용 Google Form의 formResponse URL 및 entry ID로 교체
+  availabilityDay1Entry: "",
+  availabilityDay2Entry: "",
+  // 온라인 전용 Apps Script 배포 URL (추후 연결). 서울 URL을 사용하지 마세요.
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbxS8A8tvk7ghQn4BgFe9S9wdInXT8RdYSWub5nXfGj4U1ULqeyVAD4yITSEUvWRu5Al/exec",
+  // 국가 정보는 추후 Apps Script load 응답의 country 필드에서 읽음
+  timezoneByCountry: {
+    "말레이시아": "Asia/Kuala_Lumpur",
+    "멕시코": "America/Mexico_City",
+    "알제리": "Africa/Algiers",
+    "싱가포르": "Asia/Singapore",
+    "UAE": "Asia/Dubai",
+    "영국": "Europe/London",
+    "호주": "Australia/Sydney",
+    "튀르키예": "Europe/Istanbul",
+    "뉴질랜드": "Pacific/Auckland",
+    "우즈베키스탄": "Asia/Tashkent",
+    "홍콩": "Asia/Hong_Kong",
+    "중국": "Asia/Shanghai",
+    "베트남": "Asia/Ho_Chi_Minh",
+    "대만": "Asia/Taipei",
+    "프랑스": "Europe/Paris",
+    "이탈리아": "Europe/Rome",
+    "이집트": "Africa/Cairo",
+    "일본": "Asia/Tokyo",
+    "태국": "Asia/Bangkok",
+    "독일": "Europe/Berlin",
+    "나이지리아": "Africa/Lagos",
+    "인도네시아": "Asia/Jakarta",
+    "오스트리아": "Europe/Vienna",
+    "미국": "America/New_York",
+    "파키스탄": "Asia/Karachi",
+    "캐나다": "America/Toronto",
+    "스위스": "Europe/Zurich",
+    "인도": "Asia/Kolkata",
+    "몽골": "Asia/Ulaanbaatar",
+    "벨기에": "Europe/Brussels",
+    "네덜란드": "Europe/Amsterdam",
+    "덴마크": "Europe/Copenhagen",
+    "불가리아": "Europe/Sofia",
+    "스페인": "Europe/Madrid",
+    "사우디아라비아": "Asia/Riyadh",
+    "아르헨티나": "America/Argentina/Buenos_Aires",
+    "쿠웨이트": "Asia/Kuwait",
+    "파라과이": "America/Asuncion",
+    "필리핀": "Asia/Manila",
+    "JAPAN": "Asia/Tokyo",
+    "CHINA": "Asia/Shanghai",
+    "TAIWAN": "Asia/Taipei",
+    "HONG KONG": "Asia/Hong_Kong",
+    "SINGAPORE": "Asia/Singapore",
+    "THAILAND": "Asia/Bangkok",
+    "VIETNAM": "Asia/Ho_Chi_Minh",
+    "MALAYSIA": "Asia/Kuala_Lumpur",
+    "USA": "America/New_York",
+    "UNITED STATES": "America/New_York",
+    "UK": "Europe/London",
+    "UNITED KINGDOM": "Europe/London",
+    "KOREA": "Asia/Seoul",
+    "대한민국": "Asia/Seoul"
+}
+};
+const ONLINE_SESSIONS = [
+  ["10:00","10:40"],["10:50","11:30"],["11:40","12:20"],
+  ["13:40","14:20"],["14:30","15:10"],["15:20","16:00"],
+  ["16:10","16:50"],["17:00","17:40"],["17:40","18:10"]
+];
+const ONLINE_CUTOFF_KST = Date.parse("2026-11-10T23:59:59+09:00");
+let onlineTimezone = "Asia/Seoul";
+let onlineCountry = "";
+let onlineAvailability = {day1:[],day2:[]};
+function onlineIsClosed() { return Date.now() > ONLINE_CUTOFF_KST; }
+function onlineStorageKey() { return "OnlineAvailability_" + currentBuyerCode; }
+function onlineSessionLabel(n) { return "Session " + String(n).padStart(2,"0"); }
+function onlineAvailabilityText(day) {
+  const selected = onlineAvailability[day] || [];
+  return selected.length ? selected.map(n => "세션 " + n).join(", ") : "없음";
+}
+function onlineCombinedText() {
+  return "1일차: " + onlineAvailabilityText("day1") + "\n" +
+         "2일차: " + onlineAvailabilityText("day2");
+}
+function onlineLocalTime(day, time) {
+  const [h,m] = time.split(":").map(Number);
+  const date = new Date(Date.UTC(2026,10,day,h-9,m));
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: onlineTimezone, month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",hour12:false
+  }).format(date);
+}
+function onlineSaveLocal() {
+  if (!currentBuyerCode) return;
+  localStorage.setItem(onlineStorageKey(), JSON.stringify({
+    timezone:onlineTimezone, availability:onlineAvailability
+  }));
+}
+function onlineInitBuyer(data) {
+  onlineCountry = String(data.country || "").trim();
+  const detected = ONLINE_CONFIG.timezoneByCountry[onlineCountry.toUpperCase()];
+  onlineTimezone = detected || "Asia/Seoul";
+  try {
+    const previous = JSON.parse(localStorage.getItem(onlineStorageKey()) || "null");
+    if (previous?.timezone) onlineTimezone = previous.timezone;
+    if (previous?.availability) onlineAvailability = previous.availability;
+  } catch(e) {}
+  if (data.availability && typeof data.availability === "object") {
+    onlineAvailability = data.availability;
+  }
+  if (data.timezone) onlineTimezone = data.timezone;
+}
+function onlineSetTimezone(value) {
+  onlineTimezone = value;
+  onlineSaveLocal();
+  renderCart();
+}
+function onlineToggle(day, number, checked) {
+  if (onlineIsClosed()) return;
+  const current = new Set(onlineAvailability[day] || []);
+  if (checked) current.add(number); else current.delete(number);
+  onlineAvailability[day] = [...current].sort((a,b)=>a-b);
+  onlineSaveLocal();
+  renderCart();
+}
+function onlineLocalRange(day,start,end) {
+  const a=onlineLocalTime(day,start).split(", ");
+  const b=onlineLocalTime(day,end).split(", ");
+  const startDate=a[0], startTime=a[1], endDate=b[0], endTime=b[1];
+  const eventDate=String(day).padStart(2,"0")+"/11";
+  const showDate=startDate!==eventDate || endDate!==eventDate;
+  return showDate ? `${startDate} ${startTime} – ${endDate} ${endTime}` : `${startTime} – ${endTime}`;
+}
+function onlineAvailabilityMarkup() {
+  const zones = [
+    ["Asia/Kuala_Lumpur","Malaysia"],["America/Mexico_City","Mexico"],["Africa/Algiers","Algeria"],
+    ["Asia/Singapore","Singapore"],["Asia/Dubai","UAE"],["Europe/London","United Kingdom"],
+    ["Australia/Sydney","Australia – Sydney"],["Australia/Perth","Australia – Perth"],
+    ["Europe/Istanbul","Türkiye"],["Pacific/Auckland","New Zealand"],["Asia/Tashkent","Uzbekistan"],
+    ["Asia/Hong_Kong","Hong Kong"],["Asia/Shanghai","China"],["Asia/Ho_Chi_Minh","Vietnam"],
+    ["Asia/Taipei","Taiwan"],["Europe/Paris","France"],["Europe/Rome","Italy"],
+    ["Africa/Cairo","Egypt"],["Asia/Tokyo","Japan"],["Asia/Bangkok","Thailand"],
+    ["Europe/Berlin","Germany"],["Africa/Lagos","Nigeria"],["Asia/Jakarta","Indonesia – Jakarta"],
+    ["Asia/Makassar","Indonesia – Bali"],["Europe/Vienna","Austria"],
+    ["America/New_York","United States – Eastern"],["America/Chicago","United States – Central"],
+    ["America/Denver","United States – Mountain"],["America/Los_Angeles","United States – Pacific"],
+    ["Asia/Karachi","Pakistan"],["America/Toronto","Canada – Eastern"],["America/Vancouver","Canada – Pacific"],
+    ["Europe/Zurich","Switzerland"],["Asia/Kolkata","India"],["Asia/Ulaanbaatar","Mongolia"],
+    ["Europe/Brussels","Belgium"],["Europe/Amsterdam","Netherlands"],
+    ["Europe/Copenhagen","Denmark"],["Europe/Sofia","Bulgaria"],["Europe/Madrid","Spain"],
+    ["Asia/Riyadh","Saudi Arabia"],["America/Argentina/Buenos_Aires","Argentina"],
+    ["Asia/Kuwait","Kuwait"],["America/Asuncion","Paraguay"],["Asia/Manila","Philippines"],
+    ["Asia/Seoul","Korea (KST)"]
+  ];
+  const submitted = submittedRequests.length > 0;
+  const disabled = submitted || onlineIsClosed();
+  const selector = `<select class="online-zone" onchange="onlineSetTimezone(this.value)" ${disabled?"disabled":""}>`+
+    zones.map(([z,label])=>`<option value="${z}" ${z===onlineTimezone?"selected":""}>${label}</option>`).join("")+`</select>`;
+  const days = [["day1",24,"Nov 24 (Tue)"],["day2",25,"Nov 25 (Wed)"]];
+  return `<section class="online-availability">
+    <div class="online-head"><div><h3>📅 Online Meeting Availability</h3><p>Select the sessions when you are available for online meetings.</p></div>
+    <div class="online-zone-box"><label>Your time zone</label>${selector}</div></div>
+    ${submitted?'<div class="online-notice">Your availability was submitted with your meeting requests and is now locked.</div>':''}
+    ${!onlineCountry?'<p class="online-notice">Country not found. Please choose your time zone manually.</p>':''}
+    <div class="online-day-columns">${days.map(([key,day,title])=>`<div class="online-day-panel online-${key}">
+      <h4 class="online-day-title">${title}<small> Korea event date</small></h4>
+      <div class="online-session-list">${ONLINE_SESSIONS.map(([start,end],i)=>{
+        const n=i+1, checked=(onlineAvailability[key]||[]).includes(n);
+        return `<label class="online-session ${checked?'is-checked':''}"><input type="checkbox" ${checked?"checked":""} ${disabled?"disabled":""}
+          onchange="onlineToggle('${key}',${n},this.checked)">
+          <span class="online-session-name">${onlineSessionLabel(n)}</span>
+          <strong class="online-session-time">${onlineLocalRange(day,start,end)}</strong></label>`;
+      }).join("")}</div></div>`).join("")}</div>
+    <p class="online-footnote">Times are shown in your selected time zone. Availability is submitted together with your meeting requests.</p>
+  </section>`;
+}
+const GOOGLE_FORM = {
+  formResponseUrl:
+    "https://docs.google.com/forms/d/e/1FAIpQLSdCC7bK34LxCyADhCwP_j6CF9q70yD7MymX7uHte8pCGZV4Iw/formResponse",
+
+  buyerCompany: "entry.1670219158",
+
+  
+requests: [
+  {
+    "company": "entry.323343897",
+    "products": "entry.1843022979",
+    "reason": "entry.353794879",
+    "priority": "entry.389094984",
+    "report": [
+      "entry.1975095012",
+      "entry.648901854",
+      "entry.592515487",
+      "entry.647920257",
+      "entry.1568305344"
+    ]
+  },
+  {
+    "company": "entry.834553002",
+    "products": "entry.430066462",
+    "reason": "entry.475584745",
+    "priority": "entry.598775307",
+    "report": [
+      "entry.706627850",
+      "entry.1091865821",
+      "entry.362148572",
+      "entry.1135836965",
+      "entry.1028184165"
+    ]
+  },
+  {
+    "company": "entry.1888495506",
+    "products": "entry.11745262",
+    "reason": "entry.135649276",
+    "priority": "entry.1267681752",
+    "report": [
+      "entry.1799348014",
+      "entry.210852395",
+      "entry.698227220",
+      "entry.588683120",
+      "entry.2132792814"
+    ]
+  },
+  {
+    "company": "entry.931285172",
+    "products": "entry.909852717",
+    "reason": "entry.607739587",
+    "priority": "entry.2028469505",
+    "report": [
+      "entry.1021012695",
+      "entry.449721830",
+      "entry.1779003714",
+      "entry.1080190655",
+      "entry.884950367"
+    ]
+  },
+  {
+    "company": "entry.1162140484",
+    "products": "entry.320139016",
+    "reason": "entry.942014720",
+    "priority": "entry.1552200350",
+    "report": [
+      "entry.818083919",
+      "entry.1405819455",
+      "entry.449710048",
+      "entry.655304274",
+      "entry.475320744"
+    ]
+  },
+  {
+    "company": "entry.863506230",
+    "products": "entry.351659925",
+    "reason": "entry.431538352",
+    "priority": "entry.716771760",
+    "report": [
+      "entry.803284605",
+      "entry.547116221",
+      "entry.833083308",
+      "entry.801036138",
+      "entry.136335942"
+    ]
+  },
+  {
+    "company": "entry.680942983",
+    "products": "entry.1418914047",
+    "reason": "entry.1224561488",
+    "priority": "entry.171042931",
+    "report": [
+      "entry.76592067",
+      "entry.1060826691",
+      "entry.1551414248",
+      "entry.994892340",
+      "entry.1637832954"
+    ]
+  },
+  {
+    "company": "entry.266756304",
+    "products": "entry.1391363535",
+    "reason": "entry.825369681",
+    "priority": "entry.558902392",
+    "report": [
+      "entry.1062395704",
+      "entry.28548909",
+      "entry.518204550",
+      "entry.1121839713",
+      "entry.1446977719"
+    ]
+  },
+  {
+    "company": "entry.1198025143",
+    "products": "entry.1049958328",
+    "reason": "entry.209855744",
+    "priority": "entry.1628545721",
+    "report": [
+      "entry.1052850549",
+      "entry.1135500943",
+      "entry.970463203",
+      "entry.771282512",
+      "entry.503485779"
+    ]
+  },
+  {
+    "company": "entry.1618092555",
+    "products": "entry.1135389911",
+    "reason": "entry.991156667",
+    "priority": "entry.535906173",
+    "report": [
+      "entry.1211693027",
+      "entry.2015351865",
+      "entry.1568810969",
+      "entry.284912462",
+      "entry.673991554"
+    ]
+  }
+]
+};
+
+
+/* ============================================================
+   2) 샘플 디렉토리 데이터
+   ============================================================ */
+
+let companies = [];
+
+function loadCompanies() {
+  fetch("./companies.json", { cache: "no-cache" })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!Array.isArray(data)) {
+        throw new Error("companies.json must contain a JSON array.");
+      }
+
+      companies = data;
+      initializeFilters();
+      renderCompanies();
+      updateCartCount();
+
+      const match = location.hash.match(/^#company=(.+)$/);
+      if (match) {
+        const id = decodeURIComponent(match[1]);
+        const company = companies.find(c => String(c.id) === id);
+        if (company) openCompanyDetail(company.id);
+      }
+    })
+    .catch(error => {
+      console.error("DATA LOAD ERROR:", error);
+      document.getElementById("companyGrid").innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280">
+          Failed to load companies.json.
+        </div>
+      `;
+    });
+}
+
+function splitMultiValue(value) {
+  return String(value || "")
+    .split(/\r?\n|,\s*/)
+    .map(v => v.trim())
+    .filter(Boolean);
+}
+
+function convertDriveImageUrl(url) {
+  const value = String(url || "").trim();
+
+  const match =
+    value.match(/[?&]id=([^&]+)/) ||
+    value.match(/\/d\/([^/]+)/);
+
+  if (!match) return value;
+
+  const fileId = match[1];
+
+  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
+}
+
+/* ============================================================
+   3) 상태
+   ============================================================ */
+
+let cart = [];
+let submittedRequests = [];
+
+let editingCompanyId = null;
+let directoryScrollY = 0;
+
+let currentBuyerCode = "";
+let currentBuyerCompany = "";
+
+let currentPage = 1;
+const ITEMS_PER_PAGE = 15;
+
+function getLocalCartKey(code = currentBuyerCode) {
+  return `MeetingList_${code}`;
+}
+
+function saveCartToLocalStorage() {
+  if (!currentBuyerCode) return;
+
+  localStorage.setItem(
+    getLocalCartKey(),
+    JSON.stringify(cart)
+  );
+}
+
+function loadCartFromLocalStorage(code) {
+  try {
+    return JSON.parse(
+      localStorage.getItem(getLocalCartKey(code)) || "[]"
+    );
+  } catch (error) {
+    return [];
+  }
+}
+
+function submitAccessCode() {
+  const input = document.getElementById("accessCodeInput");
+
+  const code = input.value
+    .trim()
+    .toUpperCase();
+
+  if (!code) {
+    showAccessMessage(
+      "Please enter your access code."
+    );
+    return;
+  }
+
+  enterWithAccessCode(code);
+}
+
+
+function enterWithAccessCode(code, autoLogin = false) {
+  code = String(code || "")
+    .trim()
+    .toUpperCase();
+
+  if (!code) return;
+
+  const button =
+    document.getElementById("accessCodeButton");
+
+  button.disabled = true;
+
+  showAccessMessage(
+    autoLogin
+      ? "Loading your saved meeting requests..."
+      : "Checking your access code...",
+    true
+  );
+
+  loadBuyerFromServer(code)
+    .then(data => {
+
+      if (!data || !data.valid) {
+
+        if (autoLogin) {
+          localStorage.removeItem(
+            "BuyerAccessCode"
+          );
+        }
+
+        button.disabled = false;
+
+        showAccessMessage(
+          "Invalid access code. Please check your code and try again."
+        );
+
+        return;
+      }
+
+      currentBuyerCode = code;
+      currentBuyerCompany =
+        data.buyerCompany || "";
+      onlineInitBuyer(data);
+      
+      submittedRequests =
+        Array.isArray(data.submittedRequests)
+          ? data.submittedRequests
+          : [];
+
+      localStorage.setItem(
+        "BuyerAccessCode",
+        currentBuyerCode
+      );
+
+      if (
+        Array.isArray(data.cart) &&
+        data.cart.length
+      ) {
+        cart = data.cart;
+      } else {
+        cart =
+          loadCartFromLocalStorage(code);
+      }
+
+      openDirectory();
+
+    })
+    .catch(error => {
+
+      console.error(
+        "ACCESS CODE ERROR:",
+        error
+      );
+
+      if (autoLogin) {
+
+        currentBuyerCode = code;
+        cart =
+          loadCartFromLocalStorage(code);
+
+        openDirectory();
+        return;
+      }
+
+      button.disabled = false;
+
+      showAccessMessage(
+        "Unable to connect. Please try again."
+      );
+    });
+}
+
+
+function openDirectory() {
+
+  document
+    .getElementById("accessScreen")
+    .style.display = "none";
+
+  document
+    .getElementById("mainApp")
+    .hidden = false;
+
+  document
+    .getElementById("cartFab")
+    .hidden = false;
+
+  updateCartCount();
+  renderCompanies();
+}
+
+
+function showAccessMessage(message, loading = false) {
+
+  const el =
+    document.getElementById("accessMessage");
+
+  el.textContent = message;
+
+  el.classList.toggle(
+    "loading",
+    loading
+  );
+}
+
+function loadBuyerFromServer(code) {
+
+  return new Promise((resolve, reject) => {
+
+    const callbackName =
+      `gasCallback_${Date.now()}_${Math.random()
+        .toString(36)
+        .slice(2)}`;
+
+    const script =
+      document.createElement("script");
+
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(
+        new Error("Apps Script timeout")
+      );
+    }, 10000);
+
+
+    function cleanup() {
+
+      clearTimeout(timeout);
+
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+
+      try {
+        delete window[callbackName];
+      } catch (error) {
+        window[callbackName] = undefined;
+      }
+    }
+
+
+    window[callbackName] = data => {
+      cleanup();
+      resolve(data);
+    };
+
+
+    script.onerror = () => {
+      cleanup();
+      reject(
+        new Error("Apps Script load failed")
+      );
+    };
+
+
+    script.src =
+      `${APPS_SCRIPT_URL}` +
+      `?action=load` +
+      `&code=${encodeURIComponent(code)}` +
+      `&callback=${encodeURIComponent(callbackName)}` +
+      `&_=${Date.now()}`;
+
+
+    document.body.appendChild(script);
+  });
+}
+
+
+/* ============================================================
+   4) 기업 카드
+   ============================================================ */
+const CATEGORY_ORDER = [
+  "Beauty",
+  "Food",
+  "Home&Living",
+  "Healthcare",
+  "Digital&Industrial"
+];
+
+const SUBCATEGORY_MAP = {
+  "Beauty": [
+    "Skincare",
+    "Color Cosmetics",
+    "Body/Hair care",
+    "Beauty Tools/Devices",
+    "Fashion/Accessories"
+  ],
+
+  "Food": [
+    "Snacks/Ready-to Eat Foods",
+    "Beverages/Alcoholic Drinks",
+    "Ingredients/Seasonings/Sauces",
+    "Agricultural/Marin Products"
+  ],
+
+  "Home&Living": [
+    "Household Goods",
+    "Kitchenware",
+    "Baby Products",
+    "Pet Products"
+  ],
+
+  "Healthcare": [
+    "Healthcare Products",
+    "Health Functional Food/Supplements",
+    "Sports Goods",
+    "Medical Products/Pharmaceuticals"
+  ],
+
+  "Digital&Industrial": [
+    "Software/AI/Solutions",
+    "Hardware/Electronic Devices",
+    "Industrial Equipment/Machinery/Parts/Chemicals",
+    "Content"
+  ]
+};
+
+function initializeFilters() {
+  const categoryFilter = document.getElementById("categoryFilter");
+  const subcategoryFilter = document.getElementById("subcategoryFilter");
+
+  const availableCategories = new Set(
+    companies.flatMap(company =>
+      company.categories?.main || []
+    )
+  );
+
+  const categories = CATEGORY_ORDER.filter(category =>
+    availableCategories.has(category)
+  );
+
+  categoryFilter.innerHTML =
+    `<option value="">All Categories</option>` +
+    categories
+      .map(category =>
+        `<option value="${escapeAttr(category)}">
+          ${escapeHtml(category)}
+        </option>`
+      )
+      .join("");
+
+  updateSubcategoryOptions();
+
+  document
+    .getElementById("searchInput")
+    .addEventListener("input", () => {
+      currentPage = 1;
+      renderCompanies();
+    });
+
+  categoryFilter.addEventListener("change", () => {
+
+    subcategoryFilter.value = "";
+
+    updateSubcategoryOptions();
+    renderCompanies();
+  });
+
+  subcategoryFilter.addEventListener(
+    "change",
+    renderCompanies
+  );
+}
+
+function updateSubcategoryOptions() {
+  const category =
+    document.getElementById("categoryFilter").value;
+
+  const subcategoryFilter =
+    document.getElementById("subcategoryFilter");
+
+  let subcategories = [];
+
+  if (category) {
+
+    subcategories =
+      SUBCATEGORY_MAP[category] || [];
+
+  } else {
+
+    subcategories =
+      Object.values(SUBCATEGORY_MAP).flat();
+  }
+
+  const availableSubcategories = new Set(
+    companies.flatMap(company =>
+      company.categories?.sub || []
+    )
+  );
+
+  subcategories = subcategories.filter(sub =>
+    availableSubcategories.has(sub)
+  );
+
+  subcategoryFilter.innerHTML =
+    `<option value="">
+      ${category
+        ? `All ${escapeHtml(category)}`
+        : "All Subcategories"
+      }
+    </option>` +
+    subcategories
+      .map(sub =>
+        `<option value="${escapeAttr(sub)}">
+          ${escapeHtml(sub)}
+        </option>`
+      )
+      .join("");
+}
+
+function resetFilters() {
+
+  document.getElementById("searchInput").value = "";
+  document.getElementById("categoryFilter").value = "";
+
+  updateSubcategoryOptions();
+
+  document.getElementById("subcategoryFilter").value = "";
+
+  renderCompanies();
+}
+
+function renderActiveFilters() {
+
+  const keyword =
+    document.getElementById("searchInput")
+      .value
+      .trim();
+
+  const category =
+    document.getElementById("categoryFilter")
+      .value;
+
+  const subcategory =
+    document.getElementById("subcategoryFilter")
+      .value;
+
+  const container =
+    document.getElementById("activeFilters");
+
+  const chips = [];
+
+  if (keyword) {
+    chips.push(`
+      <button
+        class="filter-chip"
+        type="button"
+        onclick="clearKeywordFilter()"
+      >
+        ${escapeHtml(keyword)} ×
+      </button>
+    `);
+  }
+
+  if (category) {
+    chips.push(`
+      <button
+        class="filter-chip"
+        type="button"
+        onclick="clearCategoryFilter()"
+      >
+        ${escapeHtml(category)} ×
+      </button>
+    `);
+  }
+
+  if (subcategory) {
+    chips.push(`
+      <button
+        class="filter-chip"
+        type="button"
+        onclick="clearSubcategoryFilter()"
+      >
+        ${escapeHtml(subcategory)} ×
+      </button>
+    `);
+  }
+
+  container.innerHTML = chips.join("");
+}
+
+function clearKeywordFilter() {
+  document.getElementById("searchInput").value = "";
+  renderCompanies();
+}
+
+function clearCategoryFilter() {
+  document.getElementById("categoryFilter").value = "";
+
+  updateSubcategoryOptions();
+
+  document.getElementById("subcategoryFilter").value = "";
+
+  renderCompanies();
+}
+
+function clearSubcategoryFilter() {
+  document.getElementById("subcategoryFilter").value = "";
+  renderCompanies();
+}
+
+function getCompanySearchText(company) {
+  const productText = (company.products || [])
+    .map(product => [
+      product.name || "",
+      product.certification || ""
+    ].join(" "))
+    .join(" ");
+
+  return [
+    company.companyName || "",
+    ...(company.categories?.main || []),
+    ...(company.categories?.sub || []),
+    productText
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
+function getCategoryClass(category) {
+  const map = {
+    "Beauty": "beauty",
+    "Food": "food",
+    "Home&Living": "home-living",
+    "Healthcare": "healthcare",
+    "Digital&Industrial": "digital-industrial"
+  };
+
+  return map[category] || "";
+}
+
+function getFilteredCompanies() {
+
+  const keyword =
+    document
+      .getElementById("searchInput")
+      ?.value
+      .trim()
+      .toLowerCase() || "";
+
+  const category =
+    document
+      .getElementById("categoryFilter")
+      ?.value || "";
+
+  const subcategory =
+    document
+      .getElementById("subcategoryFilter")
+      ?.value || "";
+
+
+  return companies.filter(company => {
+
+    const keywordMatch =
+      !keyword ||
+      getCompanySearchText(company)
+        .includes(keyword);
+
+    const categoryMatch =
+      !category ||
+      (company.categories?.main || [])
+        .includes(category);
+
+    const subcategoryMatch =
+      !subcategory ||
+      (company.categories?.sub || [])
+        .includes(subcategory);
+
+    return (
+      keywordMatch &&
+      categoryMatch &&
+      subcategoryMatch
+    );
+  });
+}
+
+function renderCompanies() {
+
+  const filtered =
+  getFilteredCompanies();
+  renderActiveFilters();
+
+  document.getElementById("resultCount").textContent =
+    `Showing ${filtered.length} of ${companies.length} companies`;
+
+  const grid = document.getElementById("companyGrid");
+
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:50px;color:#6b7280">
+        No matching companies found.
+      </div>
+    `;
+
+    document.getElementById("pagination").innerHTML = "";
+    return;
+  }
+
+  const totalPages =
+    Math.ceil(filtered.length / ITEMS_PER_PAGE);
+
+  if (currentPage > totalPages) {
+    currentPage = 1;
+    renderCompanies();
+  }
+
+  const startIndex =
+    (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const paginatedCompanies =
+    filtered.slice(
+     startIndex,
+      startIndex + ITEMS_PER_PAGE
+    );
+
+  grid.innerHTML = paginatedCompanies.map(company => {
+    const productNames = (company.products || [])
+      .filter(p => p && p.name)
+      .map(p => p.name);
+
+      const firstProductImage =
+        (company.products || []).find(p => p && p.image)?.image || "";
+
+    return `
+      <article class="card">
+
+        ${firstProductImage
+         ? `
+           <img
+             class="card-product-image"
+             src="${escapeAttr(convertDriveImageUrl(firstProductImage))}"
+             alt="${escapeAttr(company.companyName || "")}"
+             loading="lazy"
+             onerror="this.style.display='none'"
+           >
+         `
+         : ""
+       }
+
+       <div class="card-top">
+          <div>
+            ${(company.categories?.main || [])
+              .map(v => `
+                <span class="category ${getCategoryClass(v)}">
+                  ${escapeHtml(v)}
+                </span>
+              `)
+              .join(`<span class="category-separator"> · </span>`)}
+          </div>
+
+          ${submittedRequests.some(item => item.companyId === company.id)
+            ? `<span class="meeting-badge">✓ Meeting Requested</span>`
+            : cart.some(item => item.companyId === company.id)
+              ? `<span class="meeting-badge">✓ In Meeting List</span>`
+              : ""}
+        </div>
+
+
+        
+        <h3>${escapeHtml(company.companyName || "")}</h3>
+
+        ${(company.categories?.sub || []).length
+         ? `
+           <div class="card-subcategories">
+             ${(company.categories.sub || [])
+               .map(v => `
+                 <span class="card-subcategory">
+                   ${escapeHtml(v)}
+                 </span>
+               `)
+               .join("")}
+           </div>
+         `
+         : ""
+       }
+
+        <div class="product-preview">
+          ▸ ${productNames.slice(0, 3).map(escapeHtml).join("<br>▸ ")}
+          ${productNames.length > 3 ? `<br>+ ${productNames.length - 3} more` : ""}
+        </div>
+
+        <button
+          type="button"
+          class="request-btn"
+          onclick='openCompanyDetail(${JSON.stringify(company.id)})'
+        >
+          View Details
+        </button>
+      </article>
+    `;
+  }).join("");
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+
+  const container =
+    document.getElementById("pagination");
+
+  if (totalPages <= 1) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const PAGES_PER_GROUP = 12;
+
+  const currentGroup =
+    Math.floor((currentPage - 1) / PAGES_PER_GROUP);
+
+  const startPage =
+    currentGroup * PAGES_PER_GROUP + 1;
+
+  const endPage =
+    Math.min(
+      startPage + PAGES_PER_GROUP - 1,
+      totalPages
+    );
+
+  let html = "";
+
+  html += `
+    <button
+      class="page-btn"
+      type="button"
+      onclick="goToPage(${startPage - 1})"
+      ${startPage === 1 ? "disabled" : ""}
+    >
+      ‹
+    </button>
+  `;
+
+  for (
+    let page = startPage;
+    page <= endPage;
+    page++
+  ) {
+
+    html += `
+      <button
+        class="page-btn ${page === currentPage ? "active" : ""}"
+        type="button"
+        onclick="goToPage(${page})"
+      >
+        ${page}
+      </button>
+    `;
+  }
+
+
+  html += `
+    <button
+      class="page-btn"
+      type="button"
+      onclick="goToPage(${endPage + 1})"
+      ${endPage === totalPages ? "disabled" : ""}
+    >
+      ›
+    </button>
+  `;
+
+
+  container.innerHTML = html;
+}
+
+function goToPage(page) {
+
+  const totalPages =
+    Math.ceil(
+      getFilteredCompanies().length /
+      ITEMS_PER_PAGE
+    );
+
+  if (
+    page < 1 ||
+    page > totalPages
+  ) {
+    return;
+  }
+
+  currentPage = page;
+
+  renderCompanies();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+const REPORT_QUESTIONS = [
+  "Product & Sourcing Fit",
+  "Market & Sales Potential",
+  "Product Differentiation",
+  "Brand, Design & Packaging",
+  "Certification & Regulatory Fit",
+];
+
+function renderReportMatrix() {
+  const SCORE_LABELS = [
+    "Very Low",
+    "Low",
+    "Moderate",
+    "High",
+    "Very High"
+  ];
+
+  return `
+    <div class="report-matrix-wrap">
+      <table class="report-matrix">
+        <thead>
+          <tr>
+            <th>Evaluation Criteria</th>
+            ${SCORE_LABELS.map(label =>
+              `<th>${label}</th>`
+            ).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${REPORT_QUESTIONS.map((question, index) => `
+            <tr>
+              <td>${escapeHtml(question)}</td>
+              ${SCORE_LABELS.map((label, score) => `
+                <td>
+                  <label>
+                    <input
+                      type="radio"
+                      name="report_${index}"
+                      value="${score + 1}"
+                      aria-label="${escapeAttr(question)}: ${label}"
+                    >
+                  </label>
+                </td>
+              `).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openCompanyDetail(companyId, addHistory = true) {
+  const company = companies.find(c => c.id === companyId);
+  if (!company) return;
+
+    const directoryView = document.getElementById("directoryView");
+
+      if (!directoryView.hidden) {
+        directoryScrollY = window.scrollY;
+      }
+
+  editingCompanyId = company.id;
+  const detail = document.getElementById("detailView");
+
+  const categoryChips = (company.categories?.main || [])
+    .map(v => `<span class="detail-chip">${escapeHtml(v)}</span>`)
+    .join("");
+
+  const subcategoryChips = (company.categories?.sub || [])
+    .map(v => `<span class="detail-chip">${escapeHtml(v)}</span>`)
+    .join("");
+
+  const productCards = (company.products || []).map(product => {
+    const certs = Array.isArray(product.certification)
+      ? product.certification
+      : String(product.certification || "").split(/\r?\n|,\s*|\s+\.\s+/).map(v => v.trim()).filter(Boolean);
+
+    return `
+      <article class="detail-product">
+        ${product.image ? ` <img src="${escapeAttr(convertDriveImageUrl(product.image))}" alt="${escapeAttr(product.name || "")}"
+          style="
+            width:100%;
+            max-height:320px;
+            object-fit:contain;
+            border-radius:14px;
+            margin-bottom:16px;
+            background:#f8f9fa;
+          "
+          loading="lazy"
+          onerror="this.style.display='none'"
+        > ` : ""}
+
+        <h4>${escapeHtml(product.name || "")}</h4>
+        ${product.description ? `<div class="detail-desc">${escapeHtml(product.description)}</div>` : ""}
+        ${product.hsCode ? `<div style="font-size:13px;color:#6b7280;margin-top:10px;"> <b>HS Code:</b> ${escapeHtml(product.hsCode)}</div>`: ""}
+        ${certs.length
+          ? `<div class="cert-list">${certs.map(c => `<span class="cert-badge">${escapeHtml(c)}</span>`).join("")}</div>`
+          : ""
+        }
+      </article>
+    `;
+  }).join("");
+
+  const websites = splitMultiValue(company.website);
+  const subpages = splitMultiValue(company.subpage);
+  const catalogs = splitMultiValue(company.catalog);
+  const videos = splitMultiValue(company.video);
+
+  detail.innerHTML = `
+    <div class="detail-topbar">
+       <button class="back-btn" type="button" onclick="backToDirectory()">← Back to Directory</button>
+       <button class="detail-request-btn" type="button"
+         onclick="scrollToMeetingRequest()"
+         ${submittedRequests.some(item => item.companyId === company.id) ? "disabled" : ""}>
+         ${submittedRequests.some(item => item.companyId === company.id)
+           ? "✓ Meeting Requested"
+           : cart.some(item => item.companyId === company.id)
+             ? "✓ Edit Meeting Request" : "Request Meeting"}
+       </button>
+     </div>
+
+    <div class="detail-chips">${categoryChips}${subcategoryChips}</div>
+    <h2 class="detail-title">${escapeHtml(company.companyName || "")}</h2>
+
+    <div class="detail-grid">
+      <div class="detail-info">
+        <small>Business Type</small>
+        <div>${escapeHtml(company.businessField || "-")}</div>
+      </div>
+      <div class="detail-info">
+        <small>OEM / ODM</small>
+        <div>${escapeHtml(company.oemOdm || "-")}</div>
+      </div>
+    </div>
+
+   ${(websites.length || catalogs.length || videos.length)
+     ? `
+       <div class="detail-links">
+         ${websites.map((url, i) =>
+           `<a href="${escapeAttr(url)}"
+               target="_blank"
+               rel="noopener noreferrer">
+             ${websites.length > 1 ? `Website ${i + 1}` : "Website"} ↗
+           </a>`
+         ).join("")}
+
+         ${catalogs.map((url, i) =>
+           `<a href="${escapeAttr(url)}"
+               target="_blank"
+               rel="noopener noreferrer">
+          ${catalogs.length > 1 ? `E-Catalog ${i + 1}` : "E-Catalog"} ↗
+           </a>`
+         ).join("")}
+
+         ${videos.map((url, i) =>
+           `<a href="${escapeAttr(url)}"
+               target="_blank"
+               rel="noopener noreferrer">
+             ${videos.length > 1 ? `Video ${i + 1}` : "Video"} ↗
+           </a>`
+         ).join("")}
+       </div>
+     `
+     : ""
+   }
+
+${subpages.length
+  ? `
+    <div class="detail-subpages">
+      <div class="detail-subpage-label">Product / Brand Page</div>
+
+      ${subpages.map(url => `
+        <a
+          href="${escapeAttr(url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ${escapeHtml(url)}
+        </a>
+      `).join("")}
+    </div>
+  `
+  : ""
+}
+
+    <h3 style="margin-top:30px">Products</h3>
+    <div class="detail-products">${productCards || "<p>No product information.</p>"}</div>
+     <section id="meetingRequestSection" class="inline-request-section">
+       <h3>Meeting Request</h3>
+       <p class="help">Select the products you are interested in and provide your meeting preferences.</p>
+       ${submittedRequests.some(item => item.companyId === company.id)
+         ? `<div class="inline-request-submitted">✓ Meeting Requested — This request has already been submitted.</div>`
+         : `<div class="inline-request-fields">
+              <label class="field-label">Interested Products</label>
+              <p class="help">Select one or more products from this company that you are interested in discussing during the meeting.</p>
+              <div id="productCheckboxes" class="check-list">
+                ${(company.products || []).filter(p => p && p.name).map(product => `
+                  <label class="check-item">
+                    <input type="checkbox" name="meetingProduct" value="${escapeAttr(product.name)}">
+                    <span>${escapeHtml(product.name)}</span>
+                  </label>`).join("")}
+              </div>
+              <label class="field-label" for="reasonInput">Reason for Meeting Request</label>
+              <p class="help">Please briefly explain why you would like to meet with this company.</p>
+              <textarea id="reasonInput" placeholder="Please describe your interest in this company and its products."></textarea>
+              <label class="field-label" style="margin-top:24px">Would you like us to prioritize arranging a meeting with this company?</label>
+              <p class="help">Priority matching requests can be accommodated for up to 5 companies.</p>
+              <div class="radio-row">
+                <label class="radio-item"><input type="radio" name="priority" value="Yes"><span>Yes</span></label>
+                <label class="radio-item"><input type="radio" name="priority" value="No"><span>No</span></label>
+              </div>
+              <label class="field-label" style="margin-top:28px">Company Evaluation</label>
+              <p class="help">Please rate each criterion from <b>Very Low to Very High</b> based on the company and product information provided.
+                <br>Your feedback will be anonymized and included in a summary report shared with Korean companies after the event.
+                <br><i>*All evaluation criteria are required.</i></p>
+              ${renderReportMatrix()}
+              <button class="btn primary inline-save-btn" type="button" onclick="saveToCart()">Add to Meeting List</button>
+            </div>`}
+     </section>
+
+  `;
+
+  document.getElementById("directoryView").hidden = true;
+  detail.hidden = false;
+  document.getElementById("detailTopBtn").classList.add("show");
+
+  
+const savedRequest = cart.find(item => item.companyId === company.id);
+
+if (savedRequest) {
+
+  detail.querySelectorAll('input[name="meetingProduct"]').forEach(input => {
+    input.checked = (savedRequest.products || []).includes(input.value);
+  });
+
+  const reasonField = detail.querySelector('#reasonInput');
+  if (reasonField) {
+    reasonField.value = savedRequest.reason || "";
+  }
+
+  detail.querySelectorAll('input[name="priority"]').forEach(input => {
+    input.checked = input.value === savedRequest.priority;
+  });
+
+  (savedRequest.report || []).forEach((score, index) => {
+    const input = detail.querySelector(
+      `input[name="report_${index}"][value="${score}"]`
+    );
+    if (input) input.checked = true;
+  });
+
+  const saveButton = detail.querySelector('.inline-save-btn');
+  if (saveButton) {
+    saveButton.textContent = 'Update Meeting Request';
+  }
+}
+
+window.scrollTo({ top: 0, behavior: "smooth" });
+
+if (addHistory) {
+  history.pushState(
+    { companyId },
+    "",
+    `#company=${encodeURIComponent(companyId)}`
+  );
+}
+}
+
+
+function backToDirectory(pushHistory = true) {
+  const detailView = document.getElementById("detailView");
+  const directoryView = document.getElementById("directoryView");
+
+  detailView.hidden = true;
+  directoryView.hidden = false;
+  document.getElementById("detailTopBtn").classList.remove("show");
+
+  if (pushHistory && location.hash.startsWith("#company=")) {
+    history.pushState(
+      {},
+      "",
+      location.pathname + location.search
+    );
+  }
+
+  requestAnimationFrame(() => {
+    window.scrollTo({
+      top: directoryScrollY,
+      left: 0,
+      behavior: "auto"
+    });
+  });
+}
+
+window.addEventListener("popstate", () => {
+  const match = location.hash.match(/^#company=(.+)$/);
+
+  if (match) {
+    const id = decodeURIComponent(match[1]);
+    const company = companies.find(c => String(c.id) === id);
+    if (company) openCompanyDetail(company.id);
+  } else {
+    backToDirectory(false);
+  }
+});
+
+
+/* ============================================================
+   5) 기업별 신청사항 팝업
+   ============================================================ */
+
+function scrollToMeetingRequest() {
+  document.getElementById("meetingRequestSection")?.scrollIntoView({
+    behavior: "smooth", block: "start"
+  });
+}
+
+function openRequestModal(companyId) {
+  // Retained as a compatibility entry point; requests are edited inline.
+  if (document.getElementById("detailView").hidden || editingCompanyId !== companyId) {
+    openCompanyDetail(companyId);
+  }
+  requestAnimationFrame(() => {
+    document.getElementById("meetingRequestSection")?.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+}
+
+function closeRequestModal() {
+  editingCompanyId = null;
+}
+
+function saveToCart() {
+  const company = companies.find(c => c.id === editingCompanyId);
+  if (!company) return;
+
+  if (
+  submittedRequests.some(
+    item => item.companyId === company.id
+  )
+) {
+  alert(
+    "This company has already been submitted."
+  );
+  return;
+}
+
+  const products = [
+    ...document.querySelectorAll('input[name="meetingProduct"]:checked')
+  ].map(input => input.value);
+
+  const reason = document.getElementById("reasonInput").value.trim();
+
+  const priority =
+    document.querySelector('input[name="priority"]:checked')?.value || "";
+
+  if (!products.length) {
+    alert("Please select at least one product of interest.");
+    return;
+  }
+
+  if (!reason) {
+    alert("Please enter the reason for requesting this meeting.");
+    return;
+  }
+
+  if (!priority) {
+    alert("Please select whether you would like to request priority matching.");
+    return;
+  }
+  
+  const report = REPORT_QUESTIONS.map((_, index) => {
+    return document.querySelector(
+      `input[name="report_${index}"]:checked`
+    )?.value || "";
+  });
+
+  if (report.some(score => !score)) {
+    alert(`Please complete all ${REPORT_QUESTIONS.length} evaluation items.`);
+    return;
+  }
+
+  const alreadyExists = cart.some(item => item.companyId === company.id);
+
+  const totalRequestCount =
+    submittedRequests.length + cart.length;
+
+  if (
+    !alreadyExists &&
+    totalRequestCount >= 10
+  ) {
+    alert(
+      "Submitted requests and current meeting requests combined cannot exceed 10 companies."
+    );
+    return;
+  }
+
+  const newItem = {
+    companyId: company.id,
+    companyName: company.companyName,
+
+    products,
+
+    productText: products.join(", "),
+
+    reason,
+
+    priority,
+
+    report
+  };
+
+  const index = cart.findIndex(item => item.companyId === company.id);
+
+  if (index >= 0) {
+    cart[index] = newItem;
+  } else {
+    cart.push(newItem);
+  }
+
+  saveMeetingDraft();
+  showMeetingToast(alreadyExists ? "✓ Meeting request updated!" : "✓ Added to My Meeting List!");
+
+  updateCartCount();
+  renderCompanies();
+  // Refresh the inline form and saved-request status.
+
+  if (!document.getElementById("detailView").hidden) {
+    openCompanyDetail(company.id, false);
+    requestAnimationFrame(() => {
+      document.getElementById("meetingRequestSection")?.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+  }
+}
+
+let meetingToastTimer;
+function showMeetingToast(message) {
+  const toast = document.getElementById("meetingToast");
+  if (!toast) return;
+  clearTimeout(meetingToastTimer);
+  toast.textContent = message;
+  toast.classList.add("show");
+  meetingToastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+}
+
+function updateCartCount() {
+  document.getElementById("cartCount").textContent = cart.length;
+}
+
+
+/* ============================================================
+   6) 장바구니
+   ============================================================ */
+
+function openCart() {
+  renderCart();
+  document.getElementById("cartOverlay").classList.add("open");
+}
+
+function closeCart() {
+  document.getElementById("cartOverlay").classList.remove("open");
+}
+
+function renderCart() {
+  const body = document.getElementById("cartBody");
+
+  const isFirstSubmission =
+    submittedRequests.length === 0;
+
+  const totalCount =
+    submittedRequests.length + cart.length;
+
+  const submittedHtml = submittedRequests.length
+  ? `
+    <div style="margin-bottom:28px;">
+      <h3 style="margin:0 0 14px;">
+        Submitted Requests (${submittedRequests.length})
+      </h3>
+
+      ${submittedRequests.map(item => `
+        <div class="cart-item">
+          <h4>${escapeHtml(item.companyName || "")}</h4>
+
+          <div class="cart-meta">
+            <b>Products</b><br>
+            ${escapeHtml(
+              item.productText ||
+              (Array.isArray(item.products)
+                ? item.products.join(", ")
+                : "")
+            )}
+
+            <br><br>
+
+            <b>Reason</b><br>
+            ${escapeHtml(item.reason || "")}
+
+            <br><br>
+
+            <b>Priority</b><br>
+            ${escapeHtml(item.priority || "")}
+          </div>
+
+          <div
+            style="
+              display:inline-block;
+              margin-top:12px;
+              padding:6px 10px;
+              border-radius:999px;
+              background:#ecfdf3;
+              color:#15803d;
+              font-size:12px;
+              font-weight:800;
+            "
+          >
+            ✓ Meeting Requested
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `
+  : "";
+
+  const currentHtml = cart.length
+    ? `
+      <div>
+        <h3 style="margin:0 0 14px;">
+          Current Meeting List
+        </h3>
+
+        ${cart.map(item => `
+          <div class="cart-item">
+            <h4>${escapeHtml(item.companyName)}</h4>
+
+            <div class="cart-meta">
+              <b>Products</b><br>
+              ${item.products.map(escapeHtml).join(", ")}
+
+              <br><br>
+
+              <b>Reason</b><br>
+              ${escapeHtml(item.reason)}
+
+              <br><br>
+
+              <b>Priority</b><br>
+              ${escapeHtml(item.priority)}
+            </div>
+
+            <div class="cart-actions">
+              <button
+                class="mini-btn"
+                onclick='editCartItem(${JSON.stringify(item.companyId)})'
+              >
+                Edit
+              </button>
+
+              <button
+                class="mini-btn remove"
+                onclick='removeCartItem(${JSON.stringify(item.companyId)})'
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `
+    : `
+      <div style="text-align:center;padding:24px 10px;color:#6b7280">
+        No new meeting requests added.
+      </div>
+    `;
+
+
+  const noticeText =
+    isFirstSubmission
+      ? (
+          cart.length < 1
+            ? `Please select at least 1 company. (${cart.length}/1)`
+            : `Ready to submit · ${cart.length} companies selected`
+        )
+      : (
+          `${submittedRequests.length} submitted · ` +
+          `${cart.length} new · ` +
+          `${totalCount}/10 total`
+        );
+
+
+  const submitDisabled =
+    !cart.length ||
+    (isFirstSubmission && cart.length <1) ||
+    totalCount > 10 || onlineIsClosed();
+
+
+  body.innerHTML = `
+    ${submittedHtml}
+
+    ${currentHtml}
+
+    ${onlineAvailabilityMarkup()}
+
+    <div class="submit-box">
+      <label
+        class="field-label"
+        for="buyerCompanyInput"
+      >
+        Buyer Company
+      </label>
+
+      <p class="help">
+        Your company name is linked to your access code.
+      </p>
+
+      <input
+        id="buyerCompanyInput"
+        class="text-input"
+        type="text"
+        value="${escapeAttr(currentBuyerCompany)}"
+        readonly
+      >
+
+      <p
+        id="minimumNotice"
+        class="help"
+        style="margin-top:14px;font-weight:700"
+      >
+        ${noticeText}
+      </p>
+
+      <p class="submission-note" role="note">
+        <span class="submission-note-icon" aria-hidden="true">ⓘ</span>
+        <span><strong>Note:</strong> Submitted requests cannot be edited. Additional requests can be submitted later.</span>
+      </p>
+
+      <button
+        id="finalSubmitBtn"
+        class="submit-btn"
+        onclick="submitAllRequests()"
+        ${submitDisabled ? "disabled" : ""}
+      >
+        ${cart.length
+          ? `Submit ${cart.length} New Meeting Request${cart.length > 1 ? "s" : ""}`
+          : "No New Requests"}
+      </button>
+    </div>
+  `;
+}
+
+function editCartItem(companyId) {
+  closeCart();
+  openRequestModal(companyId);
+}
+
+function removeCartItem(companyId) {
+  cart = cart.filter(item => item.companyId !== companyId);
+  saveMeetingDraft();
+  updateCartCount();
+  renderCompanies();
+  renderCart();
+}
+
+const submittedHtml = submittedRequests.length
+  ? `
+    <div style="margin-bottom:28px;">
+      <h3 style="margin:0 0 14px;">
+        Submitted Requests
+      </h3>
+
+      ${submittedRequests.map(item => `
+        <div class="cart-item">
+          <h4>${escapeHtml(item.companyName)}</h4>
+
+          <div class="cart-meta">
+            <div>
+              <b>Products:</b>
+              ${escapeHtml(item.productText || "")}
+            </div>
+
+            <div>
+              <b>Reason:</b>
+              ${escapeHtml(item.reason || "")}
+            </div>
+
+            <div>
+              <b>Priority:</b>
+              ${escapeHtml(item.priority || "")}
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top:10px;
+              font-size:12px;
+              font-weight:800;
+              color:#16a34a;
+            "
+          >
+            ✓ Meeting Requested
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `
+  : "";
+
+/* ============================================================
+   7) GOOGLE FORM 직접 POST
+   ============================================================ */
+
+async function submitAllRequests() {
+  if (onlineIsClosed()) { alert("The online submission deadline has passed."); return; }
+  const buyerCompany =
+    String(currentBuyerCompany || "").trim();
+
+  if (!buyerCompany) {
+    alert("Buyer company information could not be found. Please contact KITA.");
+    return;
+  }
+
+  if (!cart.length) {
+    alert("신청할 기업이 없습니다.");
+    return;
+  }
+
+  const isFirstSubmission =
+    submittedRequests.length === 0;
+
+  if (
+    isFirstSubmission &&
+    cart.length < 1
+  ) {
+    alert(
+      "For your first submission, please select at least 1 company."
+    );
+    return;
+  }
+
+  const totalRequestCount =
+    submittedRequests.length + cart.length;
+
+  if (totalRequestCount > 10) {
+    alert(
+      "Submitted requests and new meeting requests combined cannot exceed 10 companies."
+    );
+    return;
+  }
+
+  // At least one available session must be selected across both event days.
+  const selectedDay1 = Array.isArray(onlineAvailability.day1) ? onlineAvailability.day1 : [];
+  const selectedDay2 = Array.isArray(onlineAvailability.day2) ? onlineAvailability.day2 : [];
+  const validSession = n => Number.isInteger(n) && n >= 1 && n <= 9;
+
+  if (![...selectedDay1, ...selectedDay2].some(validSession)) {
+    alert("Please select at least one available meeting session on Nov 24 or Nov 25 before submitting.");
+    const availabilitySection = document.querySelector(".online-availability");
+    if (availabilitySection) {
+      availabilitySection.scrollIntoView({ behavior: "smooth", block: "start" });
+      availabilitySection.style.outline = "3px solid #dc2626";
+      availabilitySection.style.outlineOffset = "3px";
+    }
+    return;
+  }
+
+  const btn = document.getElementById("finalSubmitBtn");
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+
+  /*
+    fetch() 대신 hidden form + iframe 방식을 사용.
+    Google Forms는 cross-origin 응답을 JS에서 읽기 어렵기 때문에,
+    사용자가 Google Form 화면으로 이동하지 않도록 백그라운드 iframe으로 제출함.
+  */
+
+  const allRequests = [
+    ...submittedRequests
+  ];
+
+  cart.forEach(item => {
+   const existingIndex =
+      allRequests.findIndex(
+        existing =>
+          existing.companyId === item.companyId
+      );
+
+    if (existingIndex >= 0) {
+      allRequests[existingIndex] = item;
+    } else {
+      allRequests.push(item);
+    }
+  });
+
+  submitGoogleFormResponse({
+    buyerCompany,
+    items: allRequests
+  });
+
+  /*
+    주의:
+    cross-origin 특성상 브라우저에서 Google Form의 '실제 저장 성공' 응답을
+    직접 판독하기는 어렵습니다.
+    운영 전 반드시 테스트 응답을 시트에서 확인하세요.
+  */
+
+  setTimeout(() => {
+
+  const justSubmitted = [...cart];
+
+  submittedRequests = [
+    ...submittedRequests,
+    ...justSubmitted.filter(item =>
+      !submittedRequests.some(
+        submitted =>
+          submitted.companyId === item.companyId
+      )
+    )
+  ];
+
+  markCurrentCartAsSubmitted(
+    justSubmitted
+  );
+
+  cart = [];
+
+  localStorage.removeItem(
+    getLocalCartKey()
+  );
+
+  document.getElementById("cartBody").innerHTML = `
+    <div class="success">
+      <div class="icon">✓</div>
+      <h2>Meeting requests submitted</h2>
+      <p>
+        ${justSubmitted.length} new meeting request${justSubmitted.length > 1 ? "s" : ""} submitted.<br>
+        Total: ${submittedRequests.length} meeting requests.
+      </p>
+    </div>
+  `;
+
+  updateCartCount();
+  renderCompanies();
+
+}, 1300);
+}
+
+function markCurrentCartAsSubmitted(items) {
+
+  if (
+    !currentBuyerCode ||
+    !items.length
+  ) {
+    return;
+  }
+
+  const frameName =
+    `draftSubmitFrame_${Date.now()}`;
+
+  const iframe =
+    document.createElement("iframe");
+
+  iframe.name = frameName;
+  iframe.style.display = "none";
+
+  document
+    .getElementById("hiddenFrames")
+    .appendChild(iframe);
+
+
+  const form =
+    document.createElement("form");
+
+  form.method = "POST";
+  form.action = APPS_SCRIPT_URL;
+  form.target = frameName;
+  form.style.display = "none";
+
+
+  addHiddenField(
+    form,
+    "action",
+    "submit"
+  );
+
+  addHiddenField(
+    form,
+    "code",
+    currentBuyerCode
+  );
+
+  addHiddenField(
+    form,
+    "cart",
+    JSON.stringify(items)
+  );
+  addHiddenField(form,"availability",JSON.stringify(onlineAvailability));
+  addHiddenField(form,"timezone",onlineTimezone);
+
+
+  document.body.appendChild(form);
+
+  form.submit();
+  form.remove();
+
+
+  setTimeout(() => {
+    iframe.remove();
+  }, 10000);
+}
+
+function clearMeetingDraft() {
+
+  if (!currentBuyerCode) return;
+
+  localStorage.removeItem(
+    getLocalCartKey()
+  );
+
+  const frameName =
+    `draftClearFrame_${Date.now()}`;
+
+  const iframe =
+    document.createElement("iframe");
+
+  iframe.name = frameName;
+  iframe.style.display = "none";
+
+  document
+    .getElementById("hiddenFrames")
+    .appendChild(iframe);
+
+
+  const form =
+    document.createElement("form");
+
+  form.method = "POST";
+  form.action = APPS_SCRIPT_URL;
+  form.target = frameName;
+  form.style.display = "none";
+
+
+  addHiddenField(
+    form,
+    "action",
+    "clear"
+  );
+
+  addHiddenField(
+    form,
+    "code",
+    currentBuyerCode
+  );
+
+
+  document.body.appendChild(form);
+
+  form.submit();
+  form.remove();
+
+
+  setTimeout(() => {
+    iframe.remove();
+  }, 10000);
+}
+
+function submitGoogleFormResponse({ buyerCompany, items }) {
+  const frameName = `googleFormFrame_${Date.now()}`;
+
+  const iframe = document.createElement("iframe");
+  iframe.name = frameName;
+  iframe.style.display = "none";
+  document.getElementById("hiddenFrames").appendChild(iframe);
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = GOOGLE_FORM.formResponseUrl;
+  form.target = frameName;
+  form.style.display = "none";
+
+  addHiddenField(form, "fvv", "1");
+  addHiddenField(form, "draftResponse", "[]");
+  addHiddenField(form, "pageHistory", "0");
+
+  addHiddenField(form, GOOGLE_FORM.buyerCompany, buyerCompany);
+
+  items.forEach((item, index) => {
+    const fields = GOOGLE_FORM.requests[index];
+    if (!fields) return;
+
+    addHiddenField(form, fields.company, item.companyName);
+    addHiddenField(form, fields.products, item.productText);
+    addHiddenField(form, fields.reason, item.reason);
+    addHiddenField(form, fields.priority, item.priority);
+    (fields.report || []).forEach((entryId, index) => {
+      const score = item.report?.[index];
+
+      if (score !== undefined && score !== "") {
+        addHiddenField(form, entryId, String(score));
+      }
+    });
+  });
+
+  document.body.appendChild(form);
+
+  console.log("Submitting Google Form:", {
+    buyerCompany,
+    requestCount: items.length,
+    formAction: form.action
+  });
+
+  form.submit();
+
+  setTimeout(() => {
+    form.remove();
+    iframe.remove();
+  }, 5000);
+}
+
+function addHiddenField(form, name, value) {
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = name;
+  input.value = value;
+  form.appendChild(input);
+}
+
+function saveCartToServer() {
+
+  if (!currentBuyerCode) return;
+
+  const frameName =
+    `draftSaveFrame_${Date.now()}`;
+
+  const iframe =
+    document.createElement("iframe");
+
+  iframe.name = frameName;
+  iframe.style.display = "none";
+
+  document
+    .getElementById("hiddenFrames")
+    .appendChild(iframe);
+
+
+  const form =
+    document.createElement("form");
+
+  form.method = "POST";
+  form.action = APPS_SCRIPT_URL;
+  form.target = frameName;
+  form.style.display = "none";
+
+
+  addHiddenField(
+    form,
+    "action",
+    "save"
+  );
+
+  addHiddenField(
+    form,
+    "code",
+    currentBuyerCode
+  );
+
+  addHiddenField(
+    form,
+    "cart",
+    JSON.stringify(cart)
+  );
+
+
+  document.body.appendChild(form);
+
+  form.submit();
+  form.remove();
+
+
+  setTimeout(() => {
+    iframe.remove();
+  }, 10000);
+}
+
+function saveMeetingDraft() {
+  saveCartToLocalStorage();
+  saveCartToServer();
+}
+
+document
+  .getElementById("accessCodeInput")
+  .addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+      submitAccessCode();
+    }
+
+  });
+
+
+/* ============================================================
+   8) HTML escape
+   ============================================================ */
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value);
+}
+
+function scrollDetailToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
+
+loadCompanies();
+
+const savedAccessCode =
+  localStorage.getItem(
+    "BuyerAccessCode"
+  );
+
+if (savedAccessCode) {
+
+  enterWithAccessCode(
+    savedAccessCode,
+    true
+  );
+
+} else {
+
+  document
+    .getElementById("accessScreen")
+    .style.display = "flex";
+
+}
+</script>
+</body>
+</html>
