@@ -869,11 +869,10 @@ const ONLINE_SESSIONS = [
   ["13:40","14:20"],["14:30","15:10"],["15:20","16:00"],
   ["16:10","16:50"],["17:00","17:40"],["17:40","18:10"]
 ];
-const ONLINE_CUTOFF_KST = Date.parse("2026-11-10T23:59:59+09:00");
 let onlineTimezone = "Asia/Seoul";
 let onlineCountry = "";
 let onlineAvailability = {day1:[],day2:[]};
-function onlineIsClosed() { return Date.now() > ONLINE_CUTOFF_KST; }
+function onlineIsClosed() { return false; }
 function onlineStorageKey() { return "OnlineAvailability_" + currentBuyerCode; }
 function onlineSessionLabel(n) { return "Session " + String(n).padStart(2,"0"); }
 function onlineAvailabilityText(day) {
@@ -918,7 +917,6 @@ function onlineSetTimezone(value) {
   renderCart();
 }
 function onlineToggle(day, number, checked) {
-  if (onlineIsClosed()) return;
   const current = new Set(onlineAvailability[day] || []);
   if (checked) current.add(number); else current.delete(number);
   onlineAvailability[day] = [...current].sort((a,b)=>a-b);
@@ -955,7 +953,7 @@ function onlineAvailabilityMarkup() {
     ["Asia/Seoul","Korea (KST)"]
   ];
   const submitted = submittedRequests.length > 0;
-  const disabled = submitted || onlineIsClosed();
+  const disabled = submitted;
   const selector = `<select class="online-zone" onchange="onlineSetTimezone(this.value)" ${disabled?"disabled":""}>`+
     zones.map(([z,label])=>`<option value="${z}" ${z===onlineTimezone?"selected":""}>${label}</option>`).join("")+`</select>`;
   const days = [["day1",24,"Nov 24 (Tue)"],["day2",25,"Nov 25 (Wed)"]];
@@ -1297,8 +1295,7 @@ function enterWithAccessCode(code, autoLogin = false) {
       ) {
         cart = data.cart;
       } else {
-        cart =
-          loadCartFromLocalStorage(code);
+        cart = data.submittedRequests?.length ? [] : loadCartFromLocalStorage(code);
       }
 
       openDirectory();
@@ -1313,11 +1310,8 @@ function enterWithAccessCode(code, autoLogin = false) {
 
       if (autoLogin) {
 
-        currentBuyerCode = code;
-        cart =
-          loadCartFromLocalStorage(code);
-
-        openDirectory();
+        button.disabled = false;
+        showAccessMessage("Unable to verify your access code. Please try again.");
         return;
       }
 
@@ -2539,7 +2533,7 @@ function renderCart() {
   const submitDisabled =
     !cart.length ||
     (isFirstSubmission && cart.length <1) ||
-    totalCount > 10 || onlineIsClosed();
+    totalCount > 10;
 
 
   body.innerHTML = `
@@ -2658,202 +2652,112 @@ const submittedHtml = submittedRequests.length
    ============================================================ */
 
 async function submitAllRequests() {
-  if (onlineIsClosed()) { alert("The online submission deadline has passed."); return; }
-  const buyerCompany =
-    String(currentBuyerCompany || "").trim();
-
-  if (!buyerCompany) {
-    alert("Buyer company information could not be found. Please contact KITA.");
-    return;
+  if (!currentBuyerCode || !currentBuyerCompany.trim()) {
+    alert("Buyer information could not be found. Please contact KITA."); return;
   }
-
-  if (!cart.length) {
-    alert("신청할 기업이 없습니다.");
-    return;
+  if (!cart.length) { alert("No new meeting requests."); return; }
+  const newItems = cart.filter(item =>
+    !submittedRequests.some(old => String(old.companyId) === String(item.companyId))
+  );
+  if (newItems.length !== cart.length) {
+    alert("Your list contains an already submitted company. Please reload."); return;
   }
-
-  const isFirstSubmission =
-    submittedRequests.length === 0;
-
-  if (
-    isFirstSubmission &&
-    cart.length < 1
-  ) {
-    alert(
-      "For your first submission, please select at least 1 company."
-    );
-    return;
+  if (submittedRequests.length + newItems.length > 10) {
+    alert("Maximum 10 requests in total."); return;
   }
-
-  const totalRequestCount =
-    submittedRequests.length + cart.length;
-
-  if (totalRequestCount > 10) {
-    alert(
-      "Submitted requests and new meeting requests combined cannot exceed 10 companies."
-    );
-    return;
+  const first = submittedRequests.length === 0;
+  const available = [...(onlineAvailability.day1 || []), ...(onlineAvailability.day2 || [])];
+  if (first && !available.some(n => Number.isInteger(n) && n >= 1 && n <= 9)) {
+    alert("Please select at least one available session."); return;
   }
-
-  // At least one available session must be selected across both event days.
-  const selectedDay1 = Array.isArray(onlineAvailability.day1) ? onlineAvailability.day1 : [];
-  const selectedDay2 = Array.isArray(onlineAvailability.day2) ? onlineAvailability.day2 : [];
-  const validSession = n => Number.isInteger(n) && n >= 1 && n <= 9;
-
-  if (![...selectedDay1, ...selectedDay2].some(validSession)) {
-    alert("Please select at least one available meeting session on Nov 24 or Nov 25 before submitting.");
-    const availabilitySection = document.querySelector(".online-availability");
-    if (availabilitySection) {
-      availabilitySection.scrollIntoView({ behavior: "smooth", block: "start" });
-      availabilitySection.style.outline = "3px solid #dc2626";
-      availabilitySection.style.outlineOffset = "3px";
-    }
-    return;
-  }
-
-  const btn = document.getElementById("finalSubmitBtn");
-  btn.disabled = true;
-  btn.textContent = "Submitting...";
-
-  /*
-    fetch() 대신 hidden form + iframe 방식을 사용.
-    Google Forms는 cross-origin 응답을 JS에서 읽기 어렵기 때문에,
-    사용자가 Google Form 화면으로 이동하지 않도록 백그라운드 iframe으로 제출함.
-  */
-
-  const allRequests = [
-    ...submittedRequests
-  ];
-
-  cart.forEach(item => {
-   const existingIndex =
-      allRequests.findIndex(
-        existing =>
-          existing.companyId === item.companyId
+  const button = document.getElementById('finalSubmitBtn');
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+  try {
+    // Apps Script submits to Google Forms and commits the authoritative sheet record.
+    // The Apps Script POST response is cross-origin; reload via JSONP to verify persistence.
+    const before = submittedRequests.length;
+    await postToHiddenFrame_('submit', {
+      code: currentBuyerCode,
+      cart: JSON.stringify(newItems),
+      availability: JSON.stringify(onlineAvailability),
+      timezone: onlineTimezone
+    });
+    let saved;
+    for (let attempt=0; attempt<6; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 650 + attempt * 350));
+      const state = await loadBuyerFromServer(currentBuyerCode);
+      if (!state?.valid) throw new Error('Unable to verify buyer data.');
+      const allSaved = newItems.every(item =>
+        (state.submittedRequests || []).some(x => String(x.companyId) === String(item.companyId))
       );
+      if (allSaved && (state.submittedRequests || []).length >= before + newItems.length) {
+        saved = state;
+        break;
+      }
+    }
+    if (!saved) throw new Error('Server confirmation not received. Please refresh and check before retrying.');
 
-    if (existingIndex >= 0) {
-      allRequests[existingIndex] = item;
-    } else {
-      allRequests.push(item);
+    // Apps Script is the sole Google Forms submission owner.
+    // It writes the Google Form first, then commits the BuyerAccess record.
+    const allRequests = saved.submittedRequests;
+
+    submittedRequests = allRequests;
+    cart = [];
+    localStorage.removeItem(getLocalCartKey());
+    saveCartToLocalStorage();
+    document.getElementById('cartBody').innerHTML = `
+      <div class="success"><div class="icon">✓</div>
+      <h2>Meeting requests saved</h2>
+      <p>${newItems.length} new request(s) confirmed in the registration system.<br>
+      Total: ${submittedRequests.length} meeting requests.</p></div>`;
+    updateCartCount();
+    renderCompanies();
+  } catch (error) {
+    console.error('SUBMISSION ERROR', error);
+    alert('Submission could not be confirmed: ' + error.message);
+    button.disabled = false;
+    button.textContent = 'Retry Submission';
+  }
+}
+
+function postToHiddenFrame_(action, fields) {
+  return new Promise((resolve, reject) => {
+    const frameName = 'gasPost_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const iframe = document.createElement('iframe');
+    iframe.name = frameName;
+    iframe.style.display = 'none';
+    document.getElementById('hiddenFrames').appendChild(iframe);
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = APPS_SCRIPT_URL;
+    form.target = frameName;
+    form.style.display = 'none';
+    addHiddenField(form, 'action', action);
+    Object.entries(fields).forEach(([key,value]) => addHiddenField(form,key,value));
+    document.body.appendChild(form);
+    let finished = false;
+    const cleanup = () => { form.remove(); setTimeout(() => iframe.remove(), 15000); };
+    const timer = setTimeout(() => {
+      if (!finished) { finished = true; cleanup(); reject(new Error('Submission transport timeout')); }
+    }, 12000);
+    // iframe load only confirms navigation, not server success; subsequent load() verifies.
+    iframe.addEventListener('load', () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      cleanup();
+      resolve();
+    }, {once:true});
+    try { form.submit(); } catch(e) {
+      if (!finished) { finished=true; clearTimeout(timer); cleanup(); reject(e); }
     }
   });
-
-  submitGoogleFormResponse({
-    buyerCompany,
-    items: allRequests
-  });
-
-  /*
-    주의:
-    cross-origin 특성상 브라우저에서 Google Form의 '실제 저장 성공' 응답을
-    직접 판독하기는 어렵습니다.
-    운영 전 반드시 테스트 응답을 시트에서 확인하세요.
-  */
-
-  setTimeout(() => {
-
-  const justSubmitted = [...cart];
-
-  submittedRequests = [
-    ...submittedRequests,
-    ...justSubmitted.filter(item =>
-      !submittedRequests.some(
-        submitted =>
-          submitted.companyId === item.companyId
-      )
-    )
-  ];
-
-  markCurrentCartAsSubmitted(
-    justSubmitted
-  );
-
-  cart = [];
-
-  localStorage.removeItem(
-    getLocalCartKey()
-  );
-
-  document.getElementById("cartBody").innerHTML = `
-    <div class="success">
-      <div class="icon">✓</div>
-      <h2>Meeting requests submitted</h2>
-      <p>
-        ${justSubmitted.length} new meeting request${justSubmitted.length > 1 ? "s" : ""} submitted.<br>
-        Total: ${submittedRequests.length} meeting requests.
-      </p>
-    </div>
-  `;
-
-  updateCartCount();
-  renderCompanies();
-
-}, 1300);
 }
 
 function markCurrentCartAsSubmitted(items) {
-
-  if (
-    !currentBuyerCode ||
-    !items.length
-  ) {
-    return;
-  }
-
-  const frameName =
-    `draftSubmitFrame_${Date.now()}`;
-
-  const iframe =
-    document.createElement("iframe");
-
-  iframe.name = frameName;
-  iframe.style.display = "none";
-
-  document
-    .getElementById("hiddenFrames")
-    .appendChild(iframe);
-
-
-  const form =
-    document.createElement("form");
-
-  form.method = "POST";
-  form.action = APPS_SCRIPT_URL;
-  form.target = frameName;
-  form.style.display = "none";
-
-
-  addHiddenField(
-    form,
-    "action",
-    "submit"
-  );
-
-  addHiddenField(
-    form,
-    "code",
-    currentBuyerCode
-  );
-
-  addHiddenField(
-    form,
-    "cart",
-    JSON.stringify(items)
-  );
-  addHiddenField(form,"availability",JSON.stringify(onlineAvailability));
-  addHiddenField(form,"timezone",onlineTimezone);
-
-
-  document.body.appendChild(form);
-
-  form.submit();
-  form.remove();
-
-
-  setTimeout(() => {
-    iframe.remove();
-  }, 10000);
+  // Legacy entry point: submission is now coordinated by submitAllRequests().
+  console.warn('Use submitAllRequests instead of markCurrentCartAsSubmitted');
 }
 
 function clearMeetingDraft() {
